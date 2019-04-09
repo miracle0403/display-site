@@ -63,7 +63,7 @@ router.get('/category=:category/product=:product',  function(req, res, next) {
 		if(results.length === 0){
 			res.redirect('/');
 		}else{
-			res.render('product', {title: product.product_name, products: product});
+			res.render('product', {title: 'DISPLAY SITE', products: product, product : results[0].product_name});
 		}
 	});
 });
@@ -85,7 +85,7 @@ router.get('/category=:category/page=:page',  function(req, res, next) {
 				if( err ) throw err;
 				var products = results;
 				//var links = ['/pages/1'];
-				res.render( 'category', {title: 'ALL ' + category, products: products, pagination: { page: page, pageCount: pages }});
+				res.render( 'category', {title: 'ALL ' + category, product: products, pagination: { page: page, pageCount: pages }});
 			});
 		}else{
 			var offset = ( page * limit ) - limit;
@@ -94,7 +94,7 @@ router.get('/category=:category/page=:page',  function(req, res, next) {
 			db.query(sql, details, function ( err, results, fields ){
 				if( err ) throw err;
 				var products = results;
-				res.render( 'category', {title: 'ALL ' + category, products: products, pagination: { page: page, pageCount: pages }});
+				res.render( 'category', {title: 'ALL ' + category, product: products, pagination: { page: page, pageCount: pages }});
 			});
 		}
 	});
@@ -116,7 +116,7 @@ router.get('/page=:page', function ( req, res, next ){
 				if( err ) throw err;
 				var products = results;
 				//var links = ['/pages/1'];
-				res.render( 'index', {title: 'DISPLAY SITE', products: products, pagination: { page: page, pageCount: pages }});
+				res.render( 'index', {title: 'DISPLAY SITE', product: products, pagination: { page: page, pageCount: pages }});
 			});
 		}else{
 			var offset = ( page * limit ) - limit;
@@ -125,7 +125,7 @@ router.get('/page=:page', function ( req, res, next ){
 			db.query(sql, details, function ( err, results, fields ){
 				if( err ) throw err;
 				var products = results;
-				res.render( 'index', {title: 'DISPLAY SITE', products: products, pagination: { page: page, pageCount: pages }});
+				res.render( 'index', {title: 'DISPLAY SITE', product: products, pagination: { page: page, pageCount: pages }});
 			});
 		}
 	});
@@ -191,6 +191,72 @@ router.get('/admin', ensureLoggedIn('/login'), function(req, res, next) {
 									showErrors: true,
 									childerror: flashMessages.childerror
 								});
+							}else{
+								if( flashMessages.searcherror ){
+									res.render( 'upload', {
+										title: 'ADMIN CORNER',
+										 category: category,
+										showErrors: true,
+										searcherror: flashMessages.searcherror
+									});
+								}else{
+									if( flashMessages.addsuccess ){
+										res.render( 'upload', {
+											title: 'ADMIN CORNER',
+											showSuccess: true,
+											category: category,
+											addsuccess: flashMessages.addsuccess
+										});
+									}else{
+										if( flashMessages.adderror ){
+											res.render( 'upload', {
+												title: 'ADMIN CORNER',
+												 category: category,
+												showErrors: true,
+												adderror: flashMessages.adderror
+											});
+										}else{
+											if( flashMessages.adminerror ){
+												res.render( 'upload', {
+													title: 'ADMIN CORNER',
+													 category: category,
+													showErrors: true,
+													adminerror: flashMessages.adminerror
+												});
+											}else{
+												if( flashMessages.adminsuccess ){
+													res.render( 'upload', {
+														title: 'ADMIN CORNER',
+														showSuccess: true,
+														category: category,
+														adminsuccess: flashMessages.adminsuccess
+													});
+												}else{
+													if( flashMessages.producterror ){
+														res.render( 'upload', {
+															title: 'ADMIN CORNER',
+															 category: category,
+															showErrors: true,
+															producterror: flashMessages.producterror
+														});
+													}else{
+														if( flashMessages.statussuccess ){
+															res.render( 'upload', {
+																title: 'ADMIN CORNER',
+																showSuccess: true,
+																category: category,
+																statussuccess: flashMessages.statussuccess
+															});
+														}else{
+															res.render('upload', {title: 'ADMIN CORNER', category: category});
+														}
+													}
+												}
+											}
+											
+										}
+									}
+								}
 							}
 						}
 					}
@@ -241,9 +307,21 @@ passport.deserializeUser(function(user_id, done){
 router.post('/status', function(req, res, next) {
 	var status = req.body.status;
 	var id = req.body.id;
-	db.query( 'UPDATE products SET status  = ? WHERE id = ?', [status, id], function ( err, results, fields ){
+	db.query( 'SELECT product_name FROM products WHERE product_id = ?', [id], function ( err, results, fields ){
 		if(err) throw err;
-		res.render('upload', {title: 'ADMIN CORNER', statussuccess: 'Update was successful'});
+		if (results.length === 0){
+			var error = 'This product id does not exist';
+			req.flash('producterror', error);
+			res.redirect('/admin/#productStatus');
+		}else{
+			var product = results[0].product_name;
+			db.query( 'UPDATE products SET status  = ? WHERE id = ?', [status, id], function ( err, results, fields ){
+				if(err) throw err;
+				var success = product + ' has been updated to ' + status + ' successfully';
+				req.flash('statussuccess', success);
+				res.redirect('/admin/#productStatus');
+			});
+		}
 	});
 });
 
@@ -253,8 +331,14 @@ router.post('/searchproduct', function(req, res, next) {
 	
 	db.query( 'SELECT * FROM products WHERE product_id = ?', [product_id], function ( err, results, fields ){
 		if(err) throw err;
-		var product = results;
-		res.render('upload', {title: 'ADMIN CORNER', searchresults: product});
+		if(results.length === 0){
+			var error = 'This product id does not exist';
+			req.flash('searcherror', error);
+			res.redirect('/admin/#searchresults');
+		}else{
+			var product = results;
+			res.render('upload', {title: 'ADMIN CORNER', searchresults: product});
+		}
 	});
 });
 
@@ -297,7 +381,8 @@ router.post('/addadmin', function (req, res, next) {
 		if( err ) throw err;
 		if ( results.length === 0){
 			var error = 'Sorry this user does not exist.';
-			res.render('upload', {adderror: error });
+			req.flash('adderror', error);
+			res.redirect('/admin/#addadmin');
 		}
 		else{
 			db.query('SELECT user FROM admin WHERE user = ?', [user], function(err, results, fields){
@@ -306,12 +391,14 @@ router.post('/addadmin', function (req, res, next) {
 					db.query('INSERT INTO admin ( user ) values( ? )', [user], function(err, results, fields){
 						if( err ) throw err;
 						var success = 'New Admin Added Successfully!';
-						res.render('upload', {addsuccess: success });
+						req.flash('addsuccess', success);
+						res.redirect('/admin/#addadmin');
 					});
 				}
 				if( results.length > 0 ){
 					var error = 'This user is already an Admin';
-					res.render('upload', {adderror: error });
+					req.flash('adderror', error);
+					res.redirect('/admin/#addadmin');
 				} 
 			});
 		}
@@ -326,20 +413,23 @@ router.post('/deladmin', function (req, res, next) {
 		if( err ) throw err;
 		if ( results.length === 0){
 			var error = 'Sorry this user does not exist.';
-			res.render('upload', {adminerror: error });
+			req.flash('adminerror', error);
+			res.redirect('/admin/#deladmin');
 		}
 		else{
 			db.query('SELECT user FROM admin WHERE user = ?', [user], function(err, results, fields){
 				if( err ) throw err;
 				if( results.length === 0 ){
 					var error = 'Sorry this admin does not exist.';
-					res.render('upload', {adminerror: error });
+					req.flash('adminerror', error);
+					res.redirect('/admin/#deladmin');
 				}
 				else {
 					db.query('DELETE FROM admin WHERE user = ?', [user], function(err, results, fields){
 						if( err ) throw err;
 						var success = 'Admin deleted successfully!'
-						res.render('upload', {adminsuccess: success });
+						req.flash('adminsuccess', success);
+						res.redirect('/admin/#deladmin');
 					});
 				}
 			});

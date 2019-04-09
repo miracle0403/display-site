@@ -5,7 +5,16 @@ db.query('CREATE TABLE IF NOT EXISTS products (id INT(11) NOT NULL, product_name
 	console.log('product table created');
 });
 /*
-db.query('DELIMITER // CREATE PROCEDURE  addnewcategory (parent VARCHAR(255), category VARCHAR(255)) BEGIN select @myLeft := lft FROM category WHERE category_name = parent; update category SET lft = lft + 1 WHERE lft > @myLeft; update category SET rgt = rgt + 2 WHERE rgt > @myLeft; insert into category (category_name, rgt, lft) VALUES (category, @myLeft + 2, @myLeft + 1; END // DELIMITER ;', function(err, results){
-	if (err) throw err;
-	console.log('procedure addnewcategory created');
-});*/
+DELIMITER //
+CREATE PROCEDURE addnewcategory( parent VARCHAR(255), category VARCHAR(255))
+BEGIN
+
+SELECT @myLeft := lft FROM category WHERE category_name = parent;
+
+UPDATE category SET rgt = rgt + 2 WHERE rgt > @myLeft;
+UPDATE category SET lft = lft + 2 WHERE lft > @myLeft;
+INSERT INTO category(category_name, lft, rgt) VALUES(category, @myLeft + 1, @myLeft + 2);
+
+END //
+DELIMITER ;
+*/

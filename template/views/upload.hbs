@@ -1,3 +1,7 @@
+{{> mainseo}}
+
+{{> mainnav}}
+
 <div class = "container-fluid text-center text-white bg bg-secondary">
 <section class = "container">
 <hr>
@@ -168,13 +172,23 @@
 		<div class = "col-md-6">
 		<div class = "container text-white bg bg-danger text-center">
 		<hr>
-		<h3><b>UPDATE PRODUCT STATUS</b></h3><hr>
+		<h3 id  = "productStatus"><b>UPDATE PRODUCT STATUS</b></h3><hr>
 		</div>
-		{{#if statussuccess}}
-		<div id = "stats" class = " container alert alert-success">
-		{{statussuccess}}
-		</div>
-		{{/if}}
+		{{#showSuccess}}
+		{{#statussuccess}}
+		  <div  class="alert alert-success">
+			{{.}}
+		  </div>
+		{{/statussuccess}}
+		{{/showSuccess}}
+		
+		{{#showErrors}}
+		{{#producterror}}
+		  <div class="alert alert-danger">
+			{{.}}
+		  </div>
+		{{/producterror}}
+		{{/showErrors}}
 		<form method ="POST" action ="/status">
 		<div class="container-fluid">
 		<div class = "form-row">
@@ -201,7 +215,7 @@
 		<div class = "container text-white
 	 bg bg-secondary text-center">
 		<hr>
-		<h3 class = "h3"><b>SEARCH PRODUCT</b></h3><hr>
+		<h3 id = "searchresults" class = "h3"><b>SEARCH PRODUCT</b></h3><hr>
 		</div>
 		<div class = "container">
 	{{#if searchresults}}
@@ -214,6 +228,14 @@
 	{{/each}}
 	{{/if}}
 	</div>
+	
+	{{#showErrors}}
+	{{#searcherror}}
+	  <div class="alert alert-danger">
+		{{.}}
+	  </div>
+	{{/searcherror}}
+	{{/showErrors}}
 	<form method ="POST" action ="/searchproduct">
 		<div class="container-fluid"> 	
 			<div class="form-group">
@@ -232,20 +254,25 @@
 			
 			<div class = "row">
 		<div class = "col-md-6">
-		<div class = "container text-white bg bg-danger text-center">
+		<div id = "addadmin" class = "container text-white bg bg-danger text-center">
 		<hr>
 		<h3><b>ADD ADMIN</b></h3><hr>
 		</div>
-		{{#if addsuccess}}
-		<div id = "stats" class = " container alert alert-success">
-		{{addsuccess}}
-		</div>
-		{{/if}}
-		{{#if adderror}}
-		<div id = "stats" class = " container alert alert-danger">
-		{{adderror}}
-		</div>
-		{{/if}}
+		{{#showSuccess}}
+		{{#addsuccess}}
+		  <div id = "productsuccess" class="alert alert-success">
+			{{.}}
+		  </div>
+		{{/addsuccess}}
+		{{/showSuccess}}
+		
+		{{#showErrors}}
+		{{#adderror}}
+		  <div class="alert alert-danger">
+			{{.}}
+		  </div>
+		{{/adderror}}
+		{{/showErrors}}
 		<form method ="POST" action ="/addadmin">
 		<div class="container-fluid">
 		
@@ -264,19 +291,24 @@
 		<div class = "container text-white
 	 bg bg-secondary text-center">
 		<hr>
-		<h3 class = "h3"><b>DELETE ADMIN</b></h3><hr>
+		<h3 class = "h3" id = "deladmin"><b>DELETE ADMIN</b></h3><hr>
 		</div>
 		<div class = "container">
-	{{#if adminsuccess}}
-		<div id = "stats" class = " container alert alert-success">
-		{{adminsuccess}}
-		</div>
-		{{/if}}
-		{{#if adminerror}}
-		<div id = "stats" class = " container alert alert-danger">
-		{{adminerror}}
-		</div>
-		{{/if}}
+	{{#showSuccess}}
+		{{#adminsuccess}}
+		  <div class="alert alert-success">
+			{{.}}
+		  </div>
+		{{/adminsuccess}}
+		{{/showSuccess}}
+		
+		{{#showErrors}}
+		{{#adminerror}}
+		  <div class="alert alert-danger">
+			{{.}}
+		  </div>
+		{{/adminerror}}
+		{{/showErrors}}
 	</div>
 	<form method ="POST" action ="/deladmin">
 		<div class="container-fluid"> 	
