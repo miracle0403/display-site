@@ -1,0 +1,20 @@
+{{> mainseo}}
+{{> mainnav}}
+
+<br>
+<div class = "text-white text-center bg bg-danger"><hr>
+        <h4 style="text-align: center"><b>{{title}}</b></h4><hr>
+     </div>
+     <div class = "container-fluid text-justify">
+{{#if category}}
+	{{#each category}}
+		<p><a href = "/category={{category_name}}/page=1">{{category_name}}</a></p>
+	{{/each}}
+{{/if}}
+
+{{#if products}}
+	{{#each products}}
+		<p><a href = "{{url}}">{{product_name}}</a></p>
+	{{/each}}
+{{/if}}
+</div>

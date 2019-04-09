@@ -1,0 +1,41 @@
+{{> mainseo}}
+
+{{> mainnav}}
+
+<section class="text-center container-fluid">
+<br><br>
+    <div class="container bg bg-danger text-white"><hr><b>
+      <h2 class = "h2">  PRODUCT INFORMATION </b></h2>
+  <hr>
+  </div>
+  
+  <div class = "container">
+	{{#if products}}
+		{{#each products}}
+
+			<div class="card mb-3" style="max-width: 900px;">
+			  <div class="row no-gutters">
+				<div class="col-md-4">
+				  <img src="{{image}}" class="card-product" alt="{{image}}">
+				</div>
+				<div class="col-md-8">
+				<div class="card-header">
+					<h5 class="card-title">{{product_name}}</h5>
+				</div>
+				  <div class="card-body">
+					
+					<p class="card-text text-justify">{{description}}</p><br>
+					
+					<p class="card-text text-center text-danger">{{status}}</p><br>
+					<div class="card-footer">
+						<p class="card-text"><b>Price: {{price}}</b></p>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		</div>
+				
+		{{/each}}
+	{{/if}}
+  </div>

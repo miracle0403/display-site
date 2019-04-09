@@ -1,0 +1,36 @@
+	
+	{{#if products}}
+	<title> BUY {{title}} | DISPLAY SITE</title>
+	{{else}}
+	<title> {{title}}</title>
+	{{/if}}
+	
+	<meta name="yandex-verification" content="8c1cd001ada674f5" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	{{#if products}}
+    <meta name="description" content="{{description}} Get this awesome {{product_name}} now for just {{price}}." />
+	{{else}}
+	<meta name="description" content="some description should be here" />
+	{{/if}}
+	{{#if products}}
+	<meta name="keywords" content="buy {{product_name}}, best {{product_name}}, buy affordable {{product_name}}, {{product_name}}" />
+	{{else}}
+	<meta name="keywords" content="{{title}}" />
+	{{/if}}
+	<meta name="author" content="swiftrevolver.com" />
+
+
+
+  	<!-- Facebook and Twitter integration -->
+	<meta property="og:title" content=""/>
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content=""/>
+	<meta property="og:site_name" content=""/>
+	<meta property="og:description" content=""/>
+	<meta name="twitter:title" content="" />
+	<meta name="twitter:image" content="" />
+	<meta name="twitter:url" content="" />
+	<meta name="twitter:card" content="" />
+	
+</head>
